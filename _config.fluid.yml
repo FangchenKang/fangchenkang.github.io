@@ -168,7 +168,7 @@ about:
   name: "Kangfangchen"
   intro: "中国政治与行政"
   icons:
-    - { class: "iconfont icon-github-fill", link: "https://github.com/LapinGris", tip: "GitHub" }
+    - { class: "iconfont icon-github-fill", link: "https://github.com/FangchenKang", tip: "GitHub" }
     - { class: "iconfont icon-mail", link: "mailto:kangfangchen@sjtu.edu.cn", tip: "Email" }
 
 page:
