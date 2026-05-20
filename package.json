@@ -1,7 +1,7 @@
 {
   "name": "fangchenkang.github.io",
   "version": "1.0.0",
-  "description": "Xingxi Shen's academic blog built with Hexo and Fluid.",
+  "description": "Fangchen Kang's academic blog built with Hexo and Fluid.",
   "private": true,
   "scripts": {
     "build": "hexo generate",

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" role="img" aria-labelledby="title desc">
+  <title id="title">Default project image</title>
+  <desc id="desc">A quiet placeholder image for academic projects.</desc>
+  <rect width="320" height="240" rx="16" fill="#eef3f8"/>
+  <rect x="34" y="42" width="252" height="156" rx="12" fill="#ffffff" stroke="#cfd9e4" stroke-width="3"/>
+  <circle cx="92" cy="94" r="22" fill="#8a9bb3"/>
+  <circle cx="160" cy="94" r="22" fill="#b7c4d3"/>
+  <circle cx="228" cy="94" r="22" fill="#8a9bb3"/>
+  <path d="M114 94h24M182 94h24M92 116v34M160 116v34M228 116v34" stroke="#94a3b8" stroke-width="8" stroke-linecap="round"/>
+  <rect x="70" y="152" width="44" height="16" rx="8" fill="#d8e2ec"/>
+  <rect x="138" y="152" width="44" height="16" rx="8" fill="#d8e2ec"/>
+  <rect x="206" y="152" width="44" height="16" rx="8" fill="#d8e2ec"/>
+</svg>

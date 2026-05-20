@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 440" role="img" aria-labelledby="title desc">
+  <title id="title">Default book cover</title>
+  <desc id="desc">A quiet placeholder cover for reading notes.</desc>
+  <rect width="320" height="440" rx="18" fill="#eef3f8"/>
+  <rect x="42" y="38" width="236" height="364" rx="12" fill="#ffffff" stroke="#cfd9e4" stroke-width="3"/>
+  <rect x="72" y="86" width="176" height="12" rx="6" fill="#8a9bb3"/>
+  <rect x="72" y="118" width="128" height="10" rx="5" fill="#c5d0dc"/>
+  <path d="M92 170h136v132H92z" fill="#f4f7fb" stroke="#d7e0ea" stroke-width="3"/>
+  <path d="M116 198h88M116 226h64M116 254h92" stroke="#8a9bb3" stroke-width="10" stroke-linecap="round"/>
+  <path d="M42 65c24 8 43 8 68 0v337c-25 8-44 8-68 0z" fill="#dce5ef"/>
+</svg>
