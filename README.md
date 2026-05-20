@@ -41,6 +41,25 @@ tags:
   - 写作
 ```
 
+## 在线写作后台
+
+部署后可以访问：
+
+```text
+https://lapingris.github.io/fangchenkang.github.io/admin/
+```
+
+后台支持在线填写标题、分类、标签和 Markdown 正文，预览后发布到 GitHub。发布成功后会在仓库里创建或更新 `source/_posts/*.md` 文件，并触发 GitHub Actions 自动重新部署博客。
+
+第一次使用前需要准备一个 GitHub fine-grained personal access token：
+
+1. 打开 GitHub `Settings -> Developer settings -> Personal access tokens -> Fine-grained tokens`。
+2. 选择当前博客仓库 `LapinGris/fangchenkang.github.io`。
+3. Repository permissions 里把 `Contents` 设为 `Read and write`。
+4. 生成 token 后，在 `/admin/` 页面的“仓库设置”里填入并保存。
+
+token 只保存在当前浏览器的 `localStorage` 中，不会写入仓库。不要在公共电脑上保存 token。
+
 ## 页面结构
 
 - 首页：`/`

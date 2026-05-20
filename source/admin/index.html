@@ -1,0 +1,937 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Xingxi's Space 写作后台</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --panel: #ffffff;
+      --panel-soft: #f8fafc;
+      --line: #d9e0e7;
+      --text: #1f2937;
+      --muted: #667085;
+      --brand: #2f4154;
+      --accent: #2563eb;
+      --danger: #b42318;
+      --success: #047857;
+      --shadow: 0 18px 50px rgba(31, 41, 55, 0.08);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    header {
+      background: var(--brand);
+      color: #fff;
+      padding: 18px clamp(18px, 4vw, 42px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      box-shadow: 0 2px 18px rgba(47, 65, 84, 0.24);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 220px;
+    }
+
+    .brand strong {
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    .brand span {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 13px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .ghost-link,
+    .icon-button,
+    .primary-button,
+    .plain-button,
+    .danger-button {
+      border: 1px solid transparent;
+      border-radius: 8px;
+      min-height: 38px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .ghost-link {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .icon-button {
+      width: 38px;
+      padding: 0;
+      background: #fff;
+      border-color: var(--line);
+      color: var(--text);
+    }
+
+    .primary-button {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .plain-button {
+      background: #fff;
+      color: var(--text);
+      border-color: var(--line);
+    }
+
+    .danger-button {
+      background: #fff;
+      color: var(--danger);
+      border-color: #f3b8b2;
+    }
+
+    main {
+      padding: 24px clamp(16px, 3vw, 36px) 36px;
+      display: grid;
+      grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    aside,
+    .workspace {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    aside {
+      padding: 18px;
+      display: grid;
+      gap: 18px;
+      position: sticky;
+      top: 18px;
+    }
+
+    .workspace {
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .section-title {
+      margin: 0 0 10px;
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+      padding: 10px 11px;
+      outline: none;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: #8bb3ff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.13);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 430px;
+      line-height: 1.72;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .toolbar {
+      border-bottom: 1px solid var(--line);
+      background: var(--panel-soft);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .tabs,
+    .tools {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .tab-button {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      border-radius: 8px;
+      min-height: 34px;
+      padding: 0 12px;
+    }
+
+    .tab-button.active {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+    }
+
+    .editor-area {
+      display: grid;
+    }
+
+    .editor-panel,
+    .preview-panel {
+      padding: 18px;
+    }
+
+    .preview-panel {
+      display: none;
+      min-height: 540px;
+      line-height: 1.85;
+    }
+
+    .preview-panel.active,
+    .editor-panel.active {
+      display: block;
+    }
+
+    .editor-panel.hidden {
+      display: none;
+    }
+
+    .preview-panel h1,
+    .preview-panel h2,
+    .preview-panel h3 {
+      color: #1d2939;
+      line-height: 1.4;
+    }
+
+    .preview-panel blockquote {
+      margin: 16px 0;
+      padding: 2px 0 2px 16px;
+      border-left: 4px solid var(--line);
+      color: var(--muted);
+    }
+
+    .preview-panel code {
+      background: #eef2f6;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+
+    .preview-panel pre {
+      background: #111827;
+      color: #f9fafb;
+      padding: 14px;
+      border-radius: 8px;
+      overflow: auto;
+    }
+
+    .post-list {
+      display: grid;
+      gap: 8px;
+      max-height: 260px;
+      overflow: auto;
+    }
+
+    .post-item {
+      text-align: left;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px;
+      color: var(--text);
+    }
+
+    .post-item small {
+      display: block;
+      color: var(--muted);
+      margin-top: 4px;
+      word-break: break-all;
+    }
+
+    .status {
+      border-top: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      padding: 12px 16px;
+      font-size: 13px;
+      min-height: 44px;
+    }
+
+    .status.success {
+      color: var(--success);
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.36);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 20;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-body {
+      width: min(560px, 100%);
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .modal-body h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 980px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .header-actions {
+        justify-content: flex-start;
+      }
+
+      textarea {
+        min-height: 360px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <strong>Xingxi's Space 写作后台</strong>
+        <span>Markdown 写作，发布到 GitHub 后自动更新博客</span>
+      </div>
+      <div class="header-actions">
+        <a class="ghost-link" href="../" target="_blank" rel="noopener">打开博客</a>
+        <button class="ghost-link" type="button" id="settingsButton">仓库设置</button>
+      </div>
+    </header>
+
+    <main>
+      <aside>
+        <section>
+          <p class="section-title">文章信息</p>
+          <div class="field">
+            <label for="title">标题</label>
+            <input id="title" placeholder="例如：一份读书笔记">
+          </div>
+          <div class="field">
+            <label for="slug">文件名</label>
+            <input id="slug" placeholder="自动生成，可手动修改">
+            <div class="muted">发布到 <code>source/_posts/文件名.md</code></div>
+          </div>
+          <div class="field">
+            <label for="category">分类</label>
+            <input id="category" value="随笔">
+          </div>
+          <div class="field">
+            <label for="tags">标签</label>
+            <input id="tags" placeholder="用逗号分隔，例如：读书, 写作">
+          </div>
+        </section>
+
+        <section>
+          <p class="section-title">发布</p>
+          <button class="primary-button" type="button" id="publishButton">发布到 GitHub</button>
+          <button class="plain-button" type="button" id="saveDraftButton">保存草稿</button>
+          <button class="danger-button" type="button" id="clearDraftButton">清空草稿</button>
+          <p class="muted">发布会创建一次 Git 提交，GitHub Actions 随后自动部署。</p>
+        </section>
+
+        <section>
+          <p class="section-title">已有文章</p>
+          <button class="plain-button" type="button" id="loadPostsButton">读取文章列表</button>
+          <div class="post-list" id="postList"></div>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <div class="toolbar">
+          <div class="tabs">
+            <button class="tab-button active" type="button" data-tab="editor">编辑</button>
+            <button class="tab-button" type="button" data-tab="preview">预览</button>
+          </div>
+          <div class="tools">
+            <button class="icon-button" type="button" data-wrap="**" title="加粗">B</button>
+            <button class="icon-button" type="button" data-wrap="*" title="斜体">I</button>
+            <button class="icon-button" type="button" data-prefix="## " title="标题">H</button>
+            <button class="icon-button" type="button" data-prefix="> " title="引用">"</button>
+            <button class="icon-button" type="button" data-prefix="- " title="列表">-</button>
+          </div>
+        </div>
+
+        <div class="editor-area">
+          <div class="editor-panel active" id="editorPanel">
+            <textarea id="content" placeholder="在这里写正文。支持 Markdown。"></textarea>
+          </div>
+          <article class="preview-panel" id="previewPanel"></article>
+        </div>
+        <div class="status" id="status">准备就绪。</div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal" id="settingsModal" aria-hidden="true">
+    <div class="modal-body">
+      <h2>仓库设置</h2>
+      <div class="field">
+        <label for="owner">Owner</label>
+        <input id="owner" value="LapinGris">
+      </div>
+      <div class="field">
+        <label for="repo">Repository</label>
+        <input id="repo" value="fangchenkang.github.io">
+      </div>
+      <div class="field">
+        <label for="branch">Branch</label>
+        <input id="branch" value="main">
+      </div>
+      <div class="field">
+        <label for="token">GitHub token</label>
+        <input id="token" type="password" autocomplete="off" placeholder="Fine-grained token，权限为 Contents: Read and write">
+        <div class="muted">token 只保存在当前浏览器的 localStorage 中。不要在公共电脑上保存。</div>
+      </div>
+      <div class="modal-actions">
+        <button class="plain-button" type="button" id="closeSettingsButton">取消</button>
+        <button class="primary-button" type="button" id="saveSettingsButton">保存设置</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const storageKey = "xingxi_writer_settings";
+    const draftKey = "xingxi_writer_draft";
+    const state = {
+      editingPath: "",
+      editingSha: "",
+      settings: {
+        owner: "LapinGris",
+        repo: "fangchenkang.github.io",
+        branch: "main",
+        token: ""
+      }
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const fields = {
+      title: $("title"),
+      slug: $("slug"),
+      category: $("category"),
+      tags: $("tags"),
+      content: $("content"),
+      status: $("status")
+    };
+
+    function setStatus(message, type) {
+      fields.status.textContent = message;
+      fields.status.className = "status" + (type ? " " + type : "");
+    }
+
+    function loadSettings() {
+      const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
+      state.settings = Object.assign(state.settings, saved);
+      $("owner").value = state.settings.owner;
+      $("repo").value = state.settings.repo;
+      $("branch").value = state.settings.branch;
+      $("token").value = state.settings.token;
+    }
+
+    function saveSettings() {
+      state.settings = {
+        owner: $("owner").value.trim(),
+        repo: $("repo").value.trim(),
+        branch: $("branch").value.trim() || "main",
+        token: $("token").value.trim()
+      };
+      localStorage.setItem(storageKey, JSON.stringify(state.settings));
+      closeSettings();
+      setStatus("仓库设置已保存。", "success");
+    }
+
+    function openSettings() {
+      $("settingsModal").classList.add("active");
+      $("settingsModal").setAttribute("aria-hidden", "false");
+    }
+
+    function closeSettings() {
+      $("settingsModal").classList.remove("active");
+      $("settingsModal").setAttribute("aria-hidden", "true");
+    }
+
+    function slugify(value) {
+      return value
+        .trim()
+        .toLowerCase()
+        .normalize("NFKD")
+        .replace(/[^\w\u4e00-\u9fa5]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        || "untitled";
+    }
+
+    function nowString() {
+      const d = new Date();
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+
+    function escapeYaml(value) {
+      return String(value).replace(/"/g, '\\"');
+    }
+
+    function splitList(value) {
+      return value
+        .split(/[,，]/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    function makeFrontMatter() {
+      const tags = splitList(fields.tags.value);
+      const category = fields.category.value.trim() || "随笔";
+      const tagLines = tags.length ? tags.map((tag) => `  - ${escapeYaml(tag)}`).join("\n") : "  - 写作";
+      return [
+        "---",
+        `title: "${escapeYaml(fields.title.value.trim() || "未命名文章")}"`,
+        `date: ${nowString()}`,
+        "categories:",
+        `  - ${escapeYaml(category)}`,
+        "tags:",
+        tagLines,
+        "---",
+        ""
+      ].join("\n");
+    }
+
+    function composeMarkdown() {
+      return makeFrontMatter() + fields.content.value.trim() + "\n";
+    }
+
+    function encodeBase64Utf8(value) {
+      const bytes = new TextEncoder().encode(value);
+      let binary = "";
+      const chunk = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunk) {
+        binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+      }
+      return btoa(binary);
+    }
+
+    function decodeBase64Utf8(value) {
+      const binary = atob(value.replace(/\n/g, ""));
+      const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+      return new TextDecoder().decode(bytes);
+    }
+
+    function apiUrl(path) {
+      const { owner, repo } = state.settings;
+      return `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/${path}`;
+    }
+
+    async function githubFetch(path, options = {}) {
+      if (!state.settings.token) {
+        openSettings();
+        throw new Error("请先填写 GitHub token。");
+      }
+      const response = await fetch(apiUrl(path), {
+        ...options,
+        headers: {
+          "Accept": "application/vnd.github+json",
+          "Authorization": `Bearer ${state.settings.token}`,
+          "X-GitHub-Api-Version": "2022-11-28",
+          ...(options.headers || {})
+        }
+      });
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : null;
+      if (!response.ok) {
+        throw new Error(data && data.message ? data.message : `GitHub API ${response.status}`);
+      }
+      return data;
+    }
+
+    function saveDraft() {
+      const draft = {
+        title: fields.title.value,
+        slug: fields.slug.value,
+        category: fields.category.value,
+        tags: fields.tags.value,
+        content: fields.content.value,
+        editingPath: state.editingPath,
+        editingSha: state.editingSha
+      };
+      localStorage.setItem(draftKey, JSON.stringify(draft));
+      setStatus("草稿已保存在当前浏览器。", "success");
+    }
+
+    function loadDraft() {
+      const draft = JSON.parse(localStorage.getItem(draftKey) || "null");
+      if (!draft) return;
+      fields.title.value = draft.title || "";
+      fields.slug.value = draft.slug || "";
+      fields.category.value = draft.category || "随笔";
+      fields.tags.value = draft.tags || "";
+      fields.content.value = draft.content || "";
+      state.editingPath = draft.editingPath || "";
+      state.editingSha = draft.editingSha || "";
+      updatePreview();
+    }
+
+    function clearDraft() {
+      localStorage.removeItem(draftKey);
+      fields.title.value = "";
+      fields.slug.value = "";
+      fields.category.value = "随笔";
+      fields.tags.value = "";
+      fields.content.value = "";
+      state.editingPath = "";
+      state.editingSha = "";
+      updatePreview();
+      setStatus("草稿已清空。");
+    }
+
+    function renderMarkdown(markdown) {
+      const escaped = markdown
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      const lines = escaped.split("\n");
+      let html = "";
+      let inList = false;
+      let inCode = false;
+      let code = [];
+
+      const flushCode = () => {
+        if (inCode) {
+          html += `<pre><code>${code.join("\n")}</code></pre>`;
+          inCode = false;
+          code = [];
+        }
+      };
+
+      lines.forEach((line) => {
+        if (line.startsWith("```")) {
+          if (inCode) {
+            flushCode();
+          } else {
+            inCode = true;
+            code = [];
+          }
+          return;
+        }
+        if (inCode) {
+          code.push(line);
+          return;
+        }
+        if (/^\s*$/.test(line)) {
+          if (inList) {
+            html += "</ul>";
+            inList = false;
+          }
+          return;
+        }
+        const inline = line
+          .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+          .replace(/\*(.+?)\*/g, "<em>$1</em>")
+          .replace(/`(.+?)`/g, "<code>$1</code>")
+          .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+        if (line.startsWith("### ")) {
+          html += `<h3>${inline.slice(4)}</h3>`;
+        } else if (line.startsWith("## ")) {
+          html += `<h2>${inline.slice(3)}</h2>`;
+        } else if (line.startsWith("# ")) {
+          html += `<h1>${inline.slice(2)}</h1>`;
+        } else if (line.startsWith("> ")) {
+          html += `<blockquote>${inline.slice(2)}</blockquote>`;
+        } else if (line.startsWith("- ")) {
+          if (!inList) {
+            html += "<ul>";
+            inList = true;
+          }
+          html += `<li>${inline.slice(2)}</li>`;
+        } else {
+          if (inList) {
+            html += "</ul>";
+            inList = false;
+          }
+          html += `<p>${inline}</p>`;
+        }
+      });
+
+      if (inList) html += "</ul>";
+      flushCode();
+      return html || "<p>预览会显示在这里。</p>";
+    }
+
+    function updatePreview() {
+      $("previewPanel").innerHTML = renderMarkdown(fields.content.value);
+    }
+
+    async function loadPosts() {
+      try {
+        setStatus("正在读取文章列表...");
+        const data = await githubFetch(`contents/source/_posts?ref=${encodeURIComponent(state.settings.branch)}`);
+        const files = Array.isArray(data) ? data.filter((item) => item.name.endsWith(".md")) : [];
+        const list = $("postList");
+        list.innerHTML = "";
+        if (!files.length) {
+          list.innerHTML = '<div class="muted">还没有文章。</div>';
+        }
+        files
+          .sort((a, b) => b.name.localeCompare(a.name))
+          .forEach((file) => {
+            const button = document.createElement("button");
+            button.className = "post-item";
+            button.type = "button";
+            button.innerHTML = `<span>${file.name}</span><small>${file.path}</small>`;
+            button.addEventListener("click", () => loadPost(file.path));
+            list.appendChild(button);
+          });
+        setStatus(`已读取 ${files.length} 篇文章。`, "success");
+      } catch (error) {
+        setStatus(error.message, "error");
+      }
+    }
+
+    function parseFrontMatter(markdown) {
+      const match = markdown.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+      if (!match) return { meta: {}, body: markdown };
+      const metaText = match[1];
+      const body = match[2];
+      const meta = {};
+      const title = metaText.match(/^title:\s*"?(.+?)"?$/m);
+      const category = metaText.match(/categories:\n\s*-\s*(.+)/);
+      const tags = [...metaText.matchAll(/tags:\n([\s\S]*?)(?:\n[a-zA-Z_]+:|$)/g)][0];
+      meta.title = title ? title[1].replace(/\\"/g, '"') : "";
+      meta.category = category ? category[1].replace(/^"|"$/g, "") : "随笔";
+      if (tags) {
+        meta.tags = tags[1].split("\n").map((line) => line.replace(/^\s*-\s*/, "").trim()).filter(Boolean).join(", ");
+      }
+      return { meta, body };
+    }
+
+    async function loadPost(path) {
+      try {
+        setStatus("正在打开文章...");
+        const data = await githubFetch(`contents/${path}?ref=${encodeURIComponent(state.settings.branch)}`);
+        const markdown = decodeBase64Utf8(data.content);
+        const parsed = parseFrontMatter(markdown);
+        fields.title.value = parsed.meta.title || data.name.replace(/\.md$/, "");
+        fields.slug.value = data.name.replace(/\.md$/, "");
+        fields.category.value = parsed.meta.category || "随笔";
+        fields.tags.value = parsed.meta.tags || "";
+        fields.content.value = parsed.body.trim();
+        state.editingPath = path;
+        state.editingSha = data.sha;
+        updatePreview();
+        saveDraft();
+        setStatus(`正在编辑 ${data.name}`, "success");
+      } catch (error) {
+        setStatus(error.message, "error");
+      }
+    }
+
+    async function publish() {
+      try {
+        const title = fields.title.value.trim();
+        if (!title) throw new Error("请先填写标题。");
+        const slug = slugify(fields.slug.value || title);
+        fields.slug.value = slug;
+        const path = state.editingPath || `source/_posts/${slug}.md`;
+        const markdown = composeMarkdown();
+        const body = {
+          message: state.editingSha ? `update post: ${title}` : `add post: ${title}`,
+          content: encodeBase64Utf8(markdown),
+          branch: state.settings.branch
+        };
+        if (state.editingSha) body.sha = state.editingSha;
+
+        setStatus("正在发布到 GitHub...");
+        const data = await githubFetch(`contents/${path}`, {
+          method: "PUT",
+          body: JSON.stringify(body)
+        });
+        state.editingPath = path;
+        state.editingSha = data.content.sha;
+        saveDraft();
+        setStatus("发布成功。GitHub Actions 会在稍后自动更新网站。", "success");
+      } catch (error) {
+        if (/already exists/i.test(error.message) && !state.editingSha) {
+          setStatus("同名文件已经存在。请换一个文件名，或先从文章列表打开原文再更新。", "error");
+        } else {
+          setStatus(error.message, "error");
+        }
+      }
+    }
+
+    function wrapSelection(before, after = before) {
+      const textarea = fields.content;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selected = textarea.value.slice(start, end) || "文本";
+      textarea.value = textarea.value.slice(0, start) + before + selected + after + textarea.value.slice(end);
+      textarea.focus();
+      textarea.selectionStart = start + before.length;
+      textarea.selectionEnd = start + before.length + selected.length;
+      updatePreview();
+      saveDraft();
+    }
+
+    function prefixSelection(prefix) {
+      const textarea = fields.content;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selected = textarea.value.slice(start, end) || "文本";
+      const replacement = selected.split("\n").map((line) => prefix + line).join("\n");
+      textarea.value = textarea.value.slice(0, start) + replacement + textarea.value.slice(end);
+      textarea.focus();
+      updatePreview();
+      saveDraft();
+    }
+
+    $("settingsButton").addEventListener("click", openSettings);
+    $("closeSettingsButton").addEventListener("click", closeSettings);
+    $("saveSettingsButton").addEventListener("click", saveSettings);
+    $("saveDraftButton").addEventListener("click", saveDraft);
+    $("clearDraftButton").addEventListener("click", clearDraft);
+    $("publishButton").addEventListener("click", publish);
+    $("loadPostsButton").addEventListener("click", loadPosts);
+
+    fields.title.addEventListener("input", () => {
+      if (!fields.slug.value || !state.editingPath) fields.slug.value = slugify(fields.title.value);
+      saveDraft();
+    });
+    ["slug", "category", "tags", "content"].forEach((id) => {
+      fields[id].addEventListener("input", () => {
+        updatePreview();
+        saveDraft();
+      });
+    });
+
+    document.querySelectorAll("[data-tab]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const tab = button.dataset.tab;
+        document.querySelectorAll("[data-tab]").forEach((item) => item.classList.toggle("active", item === button));
+        $("editorPanel").classList.toggle("hidden", tab !== "editor");
+        $("previewPanel").classList.toggle("active", tab === "preview");
+        updatePreview();
+      });
+    });
+
+    document.querySelectorAll("[data-wrap]").forEach((button) => {
+      button.addEventListener("click", () => wrapSelection(button.dataset.wrap));
+    });
+    document.querySelectorAll("[data-prefix]").forEach((button) => {
+      button.addEventListener("click", () => prefixSelection(button.dataset.prefix));
+    });
+
+    loadSettings();
+    loadDraft();
+    updatePreview();
+  </script>
+</body>
+</html>
